@@ -6,12 +6,12 @@ export const CreateMessageTransporter = async (req, res, next) => {
     try {
       const {  orderID,content, sender, recipient, price } =
         req.body;
+        console.log(orderID)
       const newMessage = new Message({
         orderID,
-        
         content,
         sender: transporterID,
-     recipient,
+        recipient,
          price,
        
       });
@@ -62,6 +62,47 @@ export const CreateMessageTransporter = async (req, res, next) => {
       res.status(200).json({
         success: true,
         messages,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        error,
+        message: 'Error while retrieving messages',
+      });
+    }
+  }
+
+  export const getRecievedDetails=async(req,res,next)=>{
+    try {
+      
+      const orderID = req.params.orderID; 
+      //const transporter=await User.findById({recipient})
+      const details = await Message.findOne({ orderID }).populate("sender").populate("recipient")
+      //console.log(messages)
+      res.status(200).json({
+        success: true,
+        details,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        error,
+        message: 'Error while retrieving messages',
+      });
+    }
+  }
+  export const getSentDetails=async(req,res,next)=>{
+    try {
+      
+      const orderID = req.params.orderID; 
+      //const transporter=await User.findById({recipient})
+      const details = await Message.findOne({ orderID }).populate("sender").populate("recipient")
+      //console.log(messages)
+      res.status(200).json({
+        success: true,
+        details,
       });
     } catch (error) {
       console.log(error);

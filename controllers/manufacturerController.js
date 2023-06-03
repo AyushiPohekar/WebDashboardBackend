@@ -11,9 +11,9 @@ export const CreateMessage = async (req, res, next) => {
   const orderID = generateOrderID();
   const manufacturerID = req.user.userId;
   try {
-    const { to, from, quantity, address, content, sender, recipient, price } =
+    const { to, from, quantity, address, content, sender, recipient } =
       req.body;
-    const newMessage = new Message({
+      const newMessage = new Message({
       orderID,
       to,
       from,
@@ -21,10 +21,8 @@ export const CreateMessage = async (req, res, next) => {
       address,
       content,
       sender: manufacturerID,
-   recipient,
-       price,
-     
-    });
+      recipient,
+     });
 
     newMessage.save();
     res.status(200).send({
@@ -67,7 +65,7 @@ export const getAllMessageRecievedByManufacturer=async(req,res,next)=>{
     
     const manufacturerID = req.user.userId; 
     //const transporter=await User.findById({recipient})
-    const messages = await Message.find({ recipient: manufacturerID }).populate("sender")
+    const messages = await Message.find({ recipient: manufacturerID }).populate("sender").populate("recipient")
     //console.log(messages)
     res.status(200).json({
       success: true,
@@ -79,6 +77,43 @@ export const getAllMessageRecievedByManufacturer=async(req,res,next)=>{
       success: false,
       error,
       message: 'Error while retrieving messages',
+    });
+  }
+}
+export const getDetailsByOrderId=async(req,res,next)=>{
+  try {
+    
+    const orderID = req.params.orderID; 
+    //const transporter=await User.findById({recipient})
+    const details = await Message.findOne({ orderID }).populate("sender").populate("recipient")
+    //console.log(messages)
+    res.status(200).json({
+      success: true,
+      details,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error,
+      message: 'Error while retrieving messages',
+    });
+  }
+}
+
+export const getAllTransporters=async(req,res,next)=>{
+  try {
+    const transporters = await User.find({ role: 'Transporter' });
+    res.status(200).json({
+      success: true,
+      transporters,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error,
+      message: 'Error while retrieving transporters',
     });
   }
 }
