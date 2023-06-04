@@ -80,7 +80,49 @@ export const getAllMessageRecievedByManufacturer=async(req,res,next)=>{
     });
   }
 }
-export const getDetailsByOrderId=async(req,res,next)=>{
+
+
+
+
+export const getAllTransporters=async(req,res,next)=>{
+  try {
+    const transporters = await User.find({ role: 'Transporter' });
+    res.status(200).json({
+      success: true,
+      transporters,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error,
+      message: 'Error while retrieving transporters',
+    });
+  }
+}
+
+
+export const getRecievedDetails=async(req,res,next)=>{
+  try {
+    
+    const orderID = req.params.orderID; 
+    //const transporter=await User.findById({recipient})
+    const details = await Message.findOne({ orderID }).populate("sender").populate("recipient")
+    //console.log(messages)
+    res.status(200).json({
+      success: true,
+      details,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error,
+      message: 'Error while retrieving messages',
+    });
+  }
+}
+export const getSentDetails=async(req,res,next)=>{
   try {
     
     const orderID = req.params.orderID; 
@@ -101,19 +143,23 @@ export const getDetailsByOrderId=async(req,res,next)=>{
   }
 }
 
-export const getAllTransporters=async(req,res,next)=>{
-  try {
-    const transporters = await User.find({ role: 'Transporter' });
-    res.status(200).json({
-      success: true,
-      transporters,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      error,
-      message: 'Error while retrieving transporters',
-    });
-  }
+export const Search=async(req,res)=>{
+  const { orderID } = req.query;
+
+try {
+  const messages = await Message.find({ orderID: orderID }).populate('sender');
+
+  res.status(200).json({
+    success: true,
+    messages,
+  });
+} catch (error) {
+  console.log(error);
+  res.status(500).json({
+    success: false,
+    error,
+    message: 'Error while retrieving messages',
+  });
 }
+}
+

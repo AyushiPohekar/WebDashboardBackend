@@ -1,6 +1,6 @@
 import express from 'express';
 import { requireSignIn, transportAuthMiddleware } from '../middlewares/auth.js';
-import { CreateMessageTransporter, getRecievedDetails, getSentDetails } from '../controllers/transporterController.js';
+import { CreateMessageTransporter, Search, getRecievedDetails, getSentDetails } from '../controllers/transporterController.js';
 import { getAllMessageRecievedByManufacturer, getAllMessageSentByManufacturer } from '../controllers/manufacturerController.js';
 
 
@@ -13,5 +13,6 @@ router.get("/getAllmessageSentbyTransporter",requireSignIn,transportAuthMiddlewa
 router.get("/getAllmessageRecievedbyTransporter",requireSignIn,transportAuthMiddleware,getAllMessageRecievedByManufacturer)
 router.get("/details/recieved/:orderID",requireSignIn,transportAuthMiddleware,getRecievedDetails)
 router.get("/details/sent/:orderID",requireSignIn,transportAuthMiddleware,getSentDetails)
+router.get("/messages/search",requireSignIn,transportAuthMiddleware,Search)
 
 export default router;

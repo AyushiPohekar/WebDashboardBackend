@@ -113,4 +113,24 @@ export const CreateMessageTransporter = async (req, res, next) => {
       });
     }
   }
+
+  export const Search=async(req,res)=>{
+    const { orderID } = req.query;
+
+  try {
+    const messages = await Message.find({ orderID: orderID }).populate('sender');
+
+    res.status(200).json({
+      success: true,
+      messages,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error,
+      message: 'Error while retrieving messages',
+    });
+  }
+  }
   
